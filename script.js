@@ -16,12 +16,13 @@ function openModal(edit = false, index = 0){
             modal.classList.remove('active')
         }
     }
-
+console.log(edit)
     if (edit) {
         sNome.value = itens[index].nome
-        sfuncao.value = Intns[index].funcao
+        sfuncao.value = itens[index].funcao
         sSalario.value = itens[index].salario
         id = index  
+        console.log(id)
     } else {
         sNome.value = ''
         sfuncao.value = ''
