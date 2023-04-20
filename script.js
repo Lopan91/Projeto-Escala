@@ -37,7 +37,6 @@ function editItem(index) {
 }
 
 async function deleteItem(index) {
-    console.log("a,",itens)
     await deleteCadastro(itens[index])
     await loadItens()
 
@@ -100,6 +99,7 @@ const getItensBD = async () => {
 }
 const setItensBD = async (item) => {
     const profile = await setCadastro(item)
+    return profile
 }
 
 const getCadastro = async () => {
@@ -114,7 +114,7 @@ const getCadastro = async () => {
     });
     const result = await response.json()
     return result
-  }
+}
 
 const setCadastro = async (item) => {
     const response = await fetch("https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala", {
@@ -130,11 +130,11 @@ const setCadastro = async (item) => {
     const result = await response.json()
     console.log(result)
     return result
-  }
+}
 
-  const patchCadastro = async (item) => {
-    const response = await fetch(`https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala?id=${item.id}`, {
-        method: "PATCH", // or 'PUT'
+const patchCadastro = async (item) => {
+    const response = await fetch(`https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala?id=eq.${item.id}`, {
+        method: "PATCH",
         headers: {
             "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
@@ -146,19 +146,21 @@ const setCadastro = async (item) => {
     const result = await response.json()
     console.log(result)
     return result
-  }
+}
 
-  const deleteCadastro = async (item) => {
+const deleteCadastro = async (item) => {
     const response = await fetch(`https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala?id=eq.${item.id}`, {
         method: "DELETE",
         headers: {
             "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4"
-        }      
+        },      
     });
     const result = await response.json()
+    console.log(result)
     return result
-  }
+}
   
 
 loadItens()
+updateTable()
