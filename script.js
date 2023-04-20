@@ -36,10 +36,11 @@ function editItem(index) {
     openModal(true, index)
 }
 
-function deleteItem(index) {
-    itens.splice(index, 1)
-    setItensBD()
-    loadItens()
+async function deleteItem(index) {
+    console.log("a,",itens)
+    await deleteCadastro(itens[index])
+    await loadItens()
+
 }
 
 function insertItem(item, index) {
@@ -75,15 +76,16 @@ btnSalvar.onclick = e => {
         itens.push({'nome' : sNome.value, 'funcao': sfuncao.value, 'salario': sSalario.value})
     }
 
-    setItensBD()
+    setItensBD({ "nome": sNome.value, "funcao": sfuncao.value, "salario": sSalario.value })
 
     modal.classList.remove('active')
     loadItens()
     id = undefined
 }
 
-function loadItens() {
-    itens = getItensBD()
+async function loadItens() {
+    itens = await getItensBD()
+    console.log("b",itens)
     tbody.innerHTML = ''
     itens.forEach((item, index) => {
         insertItem(item, index)
@@ -91,7 +93,72 @@ function loadItens() {
 
 }
 
-const getItensBD = () => JSON.parse(localStorage.getItem('dbfunc')) ?? []
-const setItensBD = () => localStorage.setItem('dbfunc', JSON.stringify(itens))
+const getItensBD = async () => {
+    const itemBD = await getCadastro()
+    console.log(itemBD)
+    return itemBD
+}
+const setItensBD = async (item) => {
+    const profile = await setCadastro(item)
+}
+
+const getCadastro = async () => {
+    const response = await fetch("https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala", {
+        method: "GET", // or 'PUT'
+        headers: {
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        },        
+    });
+    const result = await response.json()
+    return result
+  }
+
+const setCadastro = async (item) => {
+    const response = await fetch("https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala", {
+        method: "POST", // or 'PUT'
+        headers: {
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(item),        
+    });
+    const result = await response.json()
+    console.log(result)
+    return result
+  }
+
+  const patchCadastro = async (item) => {
+    const response = await fetch(`https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala?id=${item.id}`, {
+        method: "PATCH", // or 'PUT'
+        headers: {
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(item),        
+    });
+    const result = await response.json()
+    console.log(result)
+    return result
+  }
+
+  const deleteCadastro = async (item) => {
+    const response = await fetch(`https://oqkrzfawsgcqynrdbcco.supabase.co/rest/v1/cadastro_escala?id=eq.${item.id}`, {
+        method: "DELETE",
+        headers: {
+            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xa3J6ZmF3c2djcXlucmRiY2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE5NjE1MDUsImV4cCI6MTk5NzUzNzUwNX0.UrcITfVg4x_Y-SS-ny8HnaYuXE2mp5419qUvUSwKFh4"
+        }      
+    });
+    const result = await response.json()
+    return result
+  }
+  
 
 loadItens()
